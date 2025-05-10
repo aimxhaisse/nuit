@@ -1,0 +1,22 @@
+agent:
+  directory: .
+  soir:
+    grpc:
+      host: localhost
+      port: 9430
+soir:
+  dsp:
+    output:
+      audio:
+        device_id: 1
+        enable: true
+    sample_directory: /Users/mxs/code/soir/dist/samples
+  grpc:
+    host: localhost
+    port: 9430
+  rt:
+    initial_bpm: 130
+    python_paths:
+    - /Users/mxs/Library/Caches/pypoetry/virtualenvs/soir-TR-m80hP-py3.11/lib/python3.11/site-packages
+    - /Users/mxs/code/soir/dist/py
+  sample_packs: []
