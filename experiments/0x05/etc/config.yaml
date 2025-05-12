@@ -1,0 +1,25 @@
+agent:
+  directory: .
+  soir:
+    grpc:
+      host: localhost
+      port: 9000
+soir:
+  dsp:
+    engine:
+      block_size: 4096
+    output:
+      audio:
+        device_id: 0
+        enable: true
+    sample_directory: $SOIR_DIR/samples
+    sample_packs:
+    - drumnibus
+  grpc:
+    host: localhost
+    port: 9000
+  rt:
+    initial_bpm: 130
+    python_paths:
+    - $SOIR_DIR/venv/lib/python3.13/site-packages
+    - $SOIR_DIR/py
