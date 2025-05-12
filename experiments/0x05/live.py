@@ -13,32 +13,26 @@ def setup():
 
 sp = sampler.new('drumnibus')
 mode = 0
-flavor = 0
 
-def hh_exploration_0():
+def hh_exploration_0(flavor, params):
     patterns = [
-        '1...2....3..1...',
+        '1...1...2..1....',
+        '.001.001.001..1.',
+        '..3...3...3...3.',
     ]
 
     samples = {
-        '1': {
-            'sp': 'oh-draconisd921',
-            'args': {'end': 0.13}
-        },
-        '2': {
-            'sp': 'oh-draconisd922',
-            'args': {'end': 0.07, 'rate': 0.96}
-        },
-        '3': {
-            'sp': 'oh-draconisd922',
-            'args': {'end': 0.25, 'rate': 0.96}
-        }
+        '0': {'sp': 'oh-draconisd921', 'args': {'end': 0.03}},
+        '1': {'sp': 'oh-draconisd921', 'args': {'end': 0.13}},
+        '2': {'sp': 'oh-draconisd922', 'args': {'end': 0.14, 'rate': 0.957}},
+        '3': {'sp': 'oh-draconisd922', 'args': {'start': 0.13, 'end': 0.3, 'rate': 0.957}},
     }
     
     for i in range(16):
         c = patterns[flavor][i]
         if c in samples:
-            sp.play(samples[c]['sp'], **samples[c]['args'])
+            p = samples[c]['args'] | params
+            sp.play(samples[c]['sp'], **p)
         sp.play('oh')
         sleep(1/4)
 
@@ -47,4 +41,4 @@ def hh_exploration_0():
 def hh_explorations():
     match mode:
         case 0:
-            hh_exploration_0()
+            hh_exploration_0(2, {'pan': 0.3})
