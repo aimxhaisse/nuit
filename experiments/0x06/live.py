@@ -16,22 +16,74 @@ sp = sampler.new('elektron-2323')
     
 
 class Kit:
+    """A simple kit for playing patterns of samples.
+
+        This class allows you to define a set of samples (or "plays") that can be
+        triggered by characters, and then create sequences of these characters to
+        play patterns.
+
+        Example usage:
+
+        ```python
+        sp = sampler.new('my-sample-pack')
+    
+        kit = Kit(sp)
+
+        kit.set('k', lambda: {'name': 'bd-808'})
+        kit.set('s', lambda: {'name': 'sd-808'})
+
+        kit.seq('basic', [
+            'k-------k-------',
+            '--------s-------',
+        ])
+
+        kit.play('basic')
+        ```
+
+        This will play a basic kick and snare pattern using the defined samples.
+    """
     def __init__(self, sp: sampler.Sampler):
+        """Initialize the Kit with a sampler instance.
+
+        Args:
+            sp (sampler.Sampler): The sampler instance to use for playing samples.
+        """
         self.sp = sp
         self.duration = current_loop().beats
         self.kit = dict()
         self.patterns = dict()
 
     def set(self, char: str, mkplay: callable) -> None:
+        """Set a character to a sample play function.
+
+        Args:
+            char (str): The character that will trigger the sample.
+            mkplay (callable): A function that returns a dictionary of sample parameters.
+        """
         self.kit[char] = mkplay
 
     def seq(self, flavor: str, sequences: list[str]) -> None:
+        """Define a sequence of samples for a given flavor.
+
+        Args:
+            flavor (str): The name of the sequence flavor.
+            sequences (list[str]): A list of strings, each representing a sequence of characters.
+        Raises:
+            ValueError: If the sequences are not of the same length.
+        """
         steps = {len(x) for x in sequences}
         if len(steps) != 1:
             raise ValueError('DrumKit sequences must be of the same duration')
         self.patterns[flavor] = sequences
 
     def play(self, flavor: str) -> None:
+        """Play a sequence of samples defined by the flavor.
+
+        Args:
+                flavor (str): The name of the sequence flavor to play.
+        Raises:
+                ValueError: If the flavor does not exist in the patterns.
+        """
         pattern = self.patterns.get(flavor)
         if not pattern:
             raise ValueError(f"DrumKit has no flavor named {flavor}")
