@@ -1,21 +1,6 @@
 # █▀ █▀█ █ █▀█
 # ▄█ █▄█ █ █▀▄ @ https://soir.dev
 
-@live()
-def setup():
-    bpm.set(130)
-
-    tracks.setup({
-        'beats': tracks.mk_sampler(),
-        'mic': tracks.mk_midi(
-            audio_in='MacBook Pro Microphone',
-            audio_chans=[0,1],
-        )
-    })
-
-    
-sp = sampler.new('elektron-2323')
-    
 
 class Kit:
     """A simple kit for playing patterns of samples.
@@ -101,47 +86,52 @@ class Kit:
             sleep(dur)
 
 
+@live()
+def setup():
+    bpm.set(130)
+
+    tracks.setup({
+        'beats': tracks.mk_sampler(),
+        'beats-high': tracks.mk_sampler(fxs={
+            'hpf': fx.mk_hpf(cutoff=0.4, resonance=0.2),
+        }),
+    })
+
+
+sp = sampler.new('elektron-2323')
+
+    
+# Bass ideas: kit.set('o', lambda: {'name': 'oh-606-mod-03', 'end': 0.2})
 
 @loop('beats', beats=4)
-def beat():
+def beat_base():
     kit = Kit(sp)
 
     kit.set('k', lambda: {'name': 'bd-606-01'})
-    kit.set('s', lambda: {'name': 'sd-909-sat-c-02'})
-    kit.set('o', lambda: {'name': 'oh-606-mod-23', 'amp': 0.2, 'end': 0.3})
-    kit.set('c', lambda: {'name': 'ch-606-01', 'amp': 0.3, 'end': 0.3, 'rate': rnd.between(0.99, 1.01), 'pan': rnd.between(-0.2, -0.4)})
-    kit.set('C', lambda: {'name': 'crash-909-01', 'rate': -1})
-    kit.set('S', lambda: {'name': 'sd-606-mod-c-08'})
+    kit.set('K', lambda: {'name': 'bd-808-sp-01', 'start': 0.05, 'end': 0.15, 'amp': 0.3})
+    kit.set('s', lambda: {'name': 'sd-606-mod-a-04', 'rate': 0.5, 'amp': 0.5})
+    kit.set('S', lambda: {'name': 'cy-606-mod-01'})
 
     kit.seq('0x00', [
         'k-------k-------k-------k-------',
+        '---K-K----K---K---K---K----K-K--',
         '--------s---------------s-------',
-        '----o-------o-------o-------o---',
+        '--------S---------------S-------',
     ])
 
-    kit.seq('0x01', [
-        'k-------k-------k-------k-------',
-        '--------s---------------s-------',
+    kit.play('0x00')
+
+    
+@loop('beats-high', beats=4)
+def beats_percs():
+    kit = Kit(sp)
+
+    kit.set('o', lambda: {'name': 'oh-909-01', 'amp': 0.4, 'pan': rnd.between(0.2, 0.4)})
+    kit.set('O', lambda: {'name': 'oh-909-02', 'amp': 0.2, 'pan': rnd.between(-0.2, -0.4)})
+
+    kit.seq('0x00', [
         '----o-------o-------o-------o---',
-        '--c--c----c--cc---c---c--c-cc-cc',
+        '----O-------O-------O-------O---',
     ])
 
-    kit.seq('0x02', [
-        'k-------k-------k-------k-------',
-        '--------s---------------s-------',
-        '----o-------o-------o-------o---',
-        '--c--c----c--cc---c---c--c-cc-cc',
-        '----------------C---------------',
-    ])
-
-    kit.seq('0x03', [
-        'k-------k-------k-------k-------',
-        '--------s---------------s-------',
-        '----o-------o-------o-------o---',
-        '--c--c----c--cc---c---c--c-cc-cc',
-        '--------S---------------S---S---',
-    ])
-
-    flavors = ['0x00', '0x01', '0x02', '0x03']
-
-    kit.play(flavors[int(rnd.between(0, len(flavors)))])
+    kit.play('0x00')
